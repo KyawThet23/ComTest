@@ -1,0 +1,5 @@
+package com.mit.first.config;
+
+public class ManagementWebConfig {
+
+}

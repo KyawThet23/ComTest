@@ -1,0 +1,5 @@
+package com.mit.first.payload;
+
+public class PageModal {
+
+}

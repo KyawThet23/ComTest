@@ -1,0 +1,40 @@
+<div class="row mb-3 sub-header">
+  <div class="col-md-3">
+    <div class="input-group">
+      <span class="bi bi-search input-group-text"></span>
+      <input class="form-control" #myInput (keyup.enter)="doSearch(myInput.value)" type="search" placeholder="Search here" />
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="input-group">
+      <span class="bi bi-archive input-group-text"></span>
+      <select [(ngModel)]="id" (change)="onSelect()" class="form-control">
+        <option *ngFor="let option of category" [value]="option.id">{{ option.name }}</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="input-group">
+      <button (click)="downloadExcel()" class="btn btn-primary me-3">
+        <i class="bi bi-download me-1"></i>Get Excel
+      </button>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="input-group custom-file-button">
+      <label class="input-group-text" for="inputGroupFile">File</label>
+      <input type="file" class="form-control" id="inputGroupFile" (change)="onFileChange($event)">
+      <button (click)="onUpload()" class="btn btn-primary">Add</button>
+    </div>
+  </div>
+  <div class="col-md-auto">
+    <button class="btn btn-info" (click)="add()">
+      <span class="bi bi-plus"></span>
+    </button>
+  </div>
+</div>
+
+<div>
+  <router-outlet></router-outlet>
+</div>
+

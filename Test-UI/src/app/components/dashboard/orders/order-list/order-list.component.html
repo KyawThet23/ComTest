@@ -1,0 +1,33 @@
+<div class="col">
+    <table *ngIf="orders?.length != 0" class="table table-striped">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Code</th>
+          <th>Order Date</th>
+          <th>Total</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of orders">
+          <td>{{ order.id }}</td>
+          <td>{{ order.code }}</td>
+          <td>{{ order.orderDate | date: 'yyyy-MM-dd' }}</td>
+          <td>{{ order.totalPrice }}</td>
+          <td>
+            <button (click)="view( order.id , order.totalPrice)" class="btn btn-primary">View</button>
+          </td>
+          <td>
+            <button (click)="delete(order.id)" class="btn  btn-danger">delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- if products empty then display a message-->
+    <div *ngIf="orders?.length == 0" class="alert alert-warning col-md-12" role="alert">
+      There is no order.
+    </div>
+</div>
+

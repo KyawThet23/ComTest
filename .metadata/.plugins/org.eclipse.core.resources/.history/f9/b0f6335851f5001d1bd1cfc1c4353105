@@ -1,0 +1,81 @@
+package com.mit.first.controller;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.mit.first.payload.OrderDto;
+import com.mit.first.payload.PlaceOrder;
+import com.mit.first.service.OrderService;
+
+//import jakarta.persistence.EntityManager;
+//import jakarta.persistence.Query;
+
+
+@RestController
+@RequestMapping("/order")
+@CrossOrigin("http://localhost:4200")
+public class OrderController {	
+	
+	@Autowired
+	private OrderService service;
+//	@Autowired
+//	private EntityManager entityManager;
+	
+	@PostMapping("/create")
+	public String createOrder(@RequestBody PlaceOrder request) {
+		
+		service.placeOrder(request);
+		
+		return "Order create successfully";
+	}
+	
+	@GetMapping("/all")
+	public List<OrderDto> getAllOrder(){
+		
+		return service.getAllOrder();
+	}
+	
+//	<-- Query to find order's product in sql-->
+//	SELECT product.name, product.price, order_.code 
+//	FROM order_ 
+//	JOIN order_product ON order_.id = order_product.order_id
+//	JOIN product ON product.id = order_product.product_id
+//	WHERE order_.id = {input};
+//	@GetMapping("/products/{id}")
+//	public List<IdProductDto[]> getProductByOrderid(@PathVariable int id){
+//		
+//		String script = "SELECT p.name, p.price, o.code "
+//				+ "FROM Order o "
+//				+ "JOIN OrderProduct op ON o.id =op.order.id "
+//				+ "JOIN Product p ON p.id = op.product.id "
+//				+ "WHERE o.id = :id ";
+//		Query query = entityManager.createQuery(script);
+//		query.setParameter("id", id);
+//		@SuppressWarnings("unchecked")
+//		List<IdProductDto[]> result = query.getResultList();
+//		return result;
+//	}
+	
+	@GetMapping("/date/{date}")
+	public List<OrderDto> findByDate (@PathVariable LocalDate date) {
+		
+		return service.findByDate(date);
+	}
+	
+	@GetMapping("/code/{code}")
+	public List<OrderDto> findByCode (@PathVariable String code){
+		
+		return service.findByCode(code);
+	}
+	
+}

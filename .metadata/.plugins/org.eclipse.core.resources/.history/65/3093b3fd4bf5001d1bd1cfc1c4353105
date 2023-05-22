@@ -1,0 +1,14 @@
+package com.mit.first.payload;
+
+import java.util.Set;
+
+import com.mit.first.ds.OrderedItem;
+
+import lombok.Data;
+
+@Data
+public class PlaceOrder {
+	
+	private float total;
+	private Set<OrderedItem> orderItems;
+}

@@ -1,0 +1,158 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "~bootstrap/dist/css/bootstrap.min.css";
+@import "~bootstrap-icons/font/bootstrap-icons.css";
+
+
+:root {
+  --main-color: #dd2f6e;
+  --color-dark: #1d2231;
+  --text-grey: #8390a2;
+}
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  list-style-type: none;
+  text-decoration: none;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Side Bar */
+.sidebar {
+  width: 250px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: #4b44b6;;
+}
+
+.brand {
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  font-family: 'Lilita One', cursive;
+  font-size: 48px;
+  text-shadow: 4px 4px 4px #aaa;
+  margin: 1rem;
+}
+
+.sidebar-menu li {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.sidebar-menu a {
+  display: block;
+  color: #fff;
+  font-size: 1rem;
+  text-decoration: none;
+  padding-left: 1rem;
+}
+
+.active-link {
+  background: #000;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+  /* border-radius: 30px 0px 0px 30px; */
+}
+
+.nav-link.active-link {
+  padding: .5rem;
+  background-color: #007bff;
+  color: #fff;
+}
+
+
+.nav-item a {
+  font-size: 1.3rem;
+}
+
+.main-content {
+  margin-left: 250px;
+  margin-top: 10px;
+}
+
+input {
+  border: none;
+}
+
+/* Search */
+
+.sub-header {
+  padding-top: 0;
+  padding-bottom: .5rem;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.main {
+  padding: 2rem 1.5rem;
+  background: #f1f5f9;
+  min-height: 100vh;
+}
+
+/* File input */
+.custom-file-button input[type=file]::-webkit-file-upload-button {
+  display: none;
+}
+
+.custom-file-button input[type=file]::file-selector-button {
+  display: none;
+}
+
+.custom-file-button:hover label {
+  background-color: #dde0e3;
+  cursor: pointer;
+}
+
+/* Cart */
+.total{
+  background:#205b8d;
+  line-height:43px;
+  color:#fff;
+  border-radius:30px;
+  border:1px solid #0da8e4;
+  float:left;
+  margin-top:7px;
+  padding-left:17px
+}
+
+.total span{
+  display:inline-block;
+  background:#fff;
+  padding:0 13px;
+  color:#000;
+  border-top-right-radius:20px;
+  border-bottom-right-radius:20px;
+  margin-left:11px
+}
+
+/* table */
+.table{
+  margin:0;
+  text-align: center;
+}
+
+table.table.table-bordered{
+  border:1px solid #ccc;
+  background:#fff
+}
+
+.table-bordered td,.table-bordered th{
+  border:1px solid #dee2e6
+}
+
+table.table.table-bordered th{
+  BACKGROUND:#0da8e4;
+  color:#fff;
+  font-size: 1rem;
+  padding:7px
+}
+
+.table-responsive{
+  padding-right:1px
+}
+

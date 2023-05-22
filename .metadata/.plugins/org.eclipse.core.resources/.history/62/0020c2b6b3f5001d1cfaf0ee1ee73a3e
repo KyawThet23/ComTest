@@ -1,0 +1,13 @@
+package com.mit.first.payload;
+
+import lombok.Data;
+
+@Data
+public class PageModal {
+
+	private int currentPage;
+    private int pageSize;
+    private long totalItems;
+    private int totalPages;
+
+}

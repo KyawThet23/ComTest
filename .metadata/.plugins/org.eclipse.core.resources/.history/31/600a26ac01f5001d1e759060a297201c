@@ -1,0 +1,17 @@
+package com.mit.first.payload;
+
+import java.util.Set;
+
+import com.mit.first.ds.Customer;
+import com.mit.first.ds.Order;
+import com.mit.first.ds.OrderedItem;
+
+import lombok.Data;
+
+@Data
+public class PlaceOrder {
+	
+	private Order order;
+	private Set<OrderedItem> orderItems;
+	private Customer customer;
+}

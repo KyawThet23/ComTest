@@ -1,0 +1,9 @@
+package com.mit.first.ds;
+
+import jakarta.persistence.Entity;
+
+@Entity
+public class OrderedItem {
+	
+	
+}

@@ -1,0 +1,21 @@
+package com.mit.first.payload;
+
+import java.util.Set;
+
+import com.mit.first.ds.Category;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class ProductDto {
+	
+	private int id;
+	private String brand;
+	private String name;
+	private float price;
+	private int quantity;
+	private Set<Category> category;
+	
+}
