@@ -1,69 +1,52 @@
-<div class="p-3">
-  <div class="row">
-    <div class="col-md-9">
-      <h3>Cart Review</h3>
-    </div>
-    <div class="col-md-auto">
-      <app-cart-status></app-cart-status>
-    </div>
-  </div>
-</div>
 <div *ngIf="cartItem.length != 0">
-  <div class="container p-3">
-    <table class="table table-bordered">
-      <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Price</th>
-        <th width="30%">Quantity</th>
-      </tr>
-      <tr *ngFor="let tempItem of cartItem">
-        <td>{{ tempItem.id }}</td>
-        <td>{{ tempItem.name }}</td>
-        <td>{{ tempItem.price | currency:'USD' }}</td>
-        <td>
   
-          <div class="items">
-  
-            <div class="row">
-              <div class="col">
-                <button (click)="addCart(tempItem)" class="btn btn-primary btn-sm">
-                  <i class="bi bi-plus"></i>
-                </button>
-              </div>
-              <div class="col ml-4 mr-2">
-                {{ tempItem.quantity }}
-              </div>
-              <div class="col">
-                <button (click)="decrease(tempItem)" class="btn btn-primary btn-sm">
-                  <i class="bi bi-dash"></i>
-                </button>
-              </div>
-              <div class="col">
-                <button (click)="remove(tempItem)" class="btn btn-info">
-                  remove
-                </button>
-              </div>
-            </div>
-  
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="3"></td>
-        <td style="font-weight: bold;">   
-          <p>Total Quantity: {{ totalQuantity }}</p>
-          <p>Total Price: {{ totalPrice | currency:'USD' }}</p>
-          <button class="btn btn-primary m-2" style="background-color: darkslateblue; border: none;"
-          >Add Order</button>
-        </td>
-      </tr>
-    </table>
-  </div>
-</div>
 
-<!-- if cart is empty then display a message -->
-<div *ngIf="cartItem.length == 0" class="alert alert-warning col-md-12" role="alert">
-  Your shopping cart is empty. 
-</div>
+    <div class="row">
+      <div class="col-md-3">
+        <h5><strong>Review : </strong></h5>
+      </div>
+      <div class="col">
+        <span> <strong> Total quantity: </strong> {{ computeQty() }} </span>
+      </div>
+      <div class="col">
+        <span> <strong> Total price: </strong> : {{ calculateTotal() | number : '1.1-2' | currency: 'USD'}} </span>
+      </div>
+    </div>
+
+      <table class="table table-striped">
+        <thead class="th-dark">
+          <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tempItem of cartItem">
+    
+            <td>{{ tempItem.name }}</td>
+            <td>{{ tempItem.price | currency:'USD' }}</td>
+            <td>
+              <input class="form-control table-input-sample" min="0" type="number" [(ngModel)]="tempItem.quantity">
+            </td>
+            <td>
+              {{tempItem.price!*tempItem.quantity | currency:"USD" }}
+            </td>
+            <td>
+              <div class="row"> 
+                <div class="col">
+                  <button (click)="remove(tempItem)" class="trash-can">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+    
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+</div> 
 

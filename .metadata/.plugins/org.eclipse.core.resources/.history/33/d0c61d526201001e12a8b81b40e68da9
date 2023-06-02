@@ -1,0 +1,165 @@
+package com.mit.first.service.impl;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.mit.first.ds.Customer;
+import com.mit.first.ds.Order;
+import com.mit.first.ds.OrderedItem;
+import com.mit.first.payload.CustomerDto;
+import com.mit.first.payload.IdProductDto;
+import com.mit.first.payload.NewOrderItem;
+import com.mit.first.payload.OrderDto;
+import com.mit.first.payload.OrderResponse;
+import com.mit.first.payload.PlaceOrder;
+import com.mit.first.repository.OrderRepo;
+import com.mit.first.service.OrderService;
+
+import jakarta.persistence.EntityNotFoundException;
+
+import com.mit.first.repository.CutomerRepository;
+import com.mit.first.repository.OrderItemRepository;
+
+@Service
+public class OrderServiceImpl implements OrderService{
+
+	@Autowired
+	private OrderRepo repo;
+	@Autowired
+	private CutomerRepository customRepo;
+	@Autowired
+	private OrderItemRepository itemRepo;
+
+	
+	
+	private String generateOrderId(){
+		
+		UUID uuid = UUID.randomUUID();
+		String code = String.format("%03d", Math.abs(uuid.getLeastSignificantBits() % 1000));
+		return code;
+    }
+	
+	@Override
+	@Transactional
+	public void placeOrder(PlaceOrder request) {
+		
+		Order order = request.getOrder();
+		order.setCode(generateOrderId());
+		order.setOrderDate(LocalDate.now());
+		
+		List<OrderedItem> items = request.getOrderItems();
+		items.forEach(item -> order.addOrderItem(item));
+		
+		Customer customer = request.getCustomer();
+		customer.addOrder(order);
+		
+		customRepo.save(customer);
+		
+	}
+
+	@Override
+	public void deleteById(int id) {
+		
+		
+		repo.deleteById(id);
+	}
+
+	
+	private boolean exists (int productId,int orderId) {
+		Optional<OrderedItem> item = itemRepo.findItem(productId, orderId);
+		return item.isPresent();
+	}
+	
+	@Override
+	public void addOrderedItem(int id, NewOrderItem request) {
+		
+		Order order = repo.findById(id)
+						.orElseThrow(EntityNotFoundException::new);
+		
+		float total = request.getTotalPrice();
+		int qty = request.getTotalQty();
+		List<OrderedItem> items = request.getItems();
+		
+		order.setTotalPrice(total);
+		order.setTotalQty(qty);
+		order.setLastDate(LocalDate.now());
+		
+		items.forEach(item -> {
+					if (exists(item.getProductId(), order.getId())) {
+						
+						OrderedItem product = itemRepo
+									.findItem(item.getProductId(), order.getId())
+									.orElseThrow(EntityNotFoundException::new);
+						System.out.println(product);
+						int toTal = item.getQuantity() + product.getQuantity();
+						
+						product.setQuantity(toTal);
+						itemRepo.save(product);
+						
+					} else {
+						order.addOrderItem(item);
+					}
+		});
+		
+		repo.save(order);
+		
+	}
+	
+	@Override
+	public void deleteOrderedItem(int orderId,int itemId,float subTotal) {
+		
+		Order order = repo.findById(orderId).orElseThrow();
+		
+		OrderedItem item = itemRepo.findById(itemId).orElseThrow();
+		
+		int total = order.getTotalQty() - item.getQuantity();
+		float totalPrice = order.getTotalPrice() - subTotal;
+		
+		order.setTotalQty(total);
+		order.setTotalPrice(totalPrice);
+		
+		repo.save(order);
+		itemRepo.deleteById(itemId);
+		
+	}
+
+	@Override 
+	public List<OrderResponse> getAll() {
+		
+		List<Object[]> result = repo.getAllOrderWithCustomer();
+        List<OrderResponse> orderDTOs = new ArrayList<>();
+        
+        for (Object[] row : result) {
+            String customerName = (String) row[0];
+            Order order = (Order) row[1];
+            
+            OrderResponse orderDTO = new OrderResponse();
+            orderDTO.setName(customerName);
+            orderDTO.setId(order.getId());
+            orderDTO.setCode(order.getCode());
+            orderDTO.setOrderDate(order.getOrderDate());
+            orderDTO.setTotalPrice(order.getTotalPrice());
+            orderDTO.setTotalQty(order.getTotalQty());
+            orderDTO.setLastDate(order.getLastDate());
+            
+            orderDTOs.add(orderDTO);
+        }
+        
+        return orderDTOs;
+	}
+
+	@Override
+	public List<IdProductDto> getAllProductsById(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}
+
+

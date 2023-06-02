@@ -1,0 +1,266 @@
+<!-- detail -->
+<div class="col-md-8">
+  <div class="row mb-3">
+    <div class="col">
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input
+          type="text"
+          value="{{ data[0]?.[5]?.['firstName']+ ' ' +data[0]?.[5]?.['lastName']  }}"
+          class="form-control"
+          [disabled]="edit"
+        />
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input
+          type="text"
+          value="{{ data[0]?.[5]?.['email'] }}"
+          class="form-control"
+          [disabled]="edit"
+        />
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-group">
+        <label class="form-label">Phone</label>
+        <input
+          type="text"
+          value="{{ data[0]?.[5]?.['phone'] }}"
+          class="form-control"
+          [disabled]="edit"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col">
+      <div class="form-group">
+        <label class="form-label">Order No.</label>
+        <input
+          type="text"
+          value="{{ data[0]?.[6]?.['code'] }}"
+          class="form-control"
+          [disabled]="edit"
+        />
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-group">
+        <label class="form-label">Total Price</label>
+        <input
+          type="text"
+          value="{{ data[0]?.[6]?.['totalPrice'] | currency:'USD' }}"
+          class="form-control"
+          [disabled]="edit"
+        />
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-group">
+        <label class="form-label">Total Qty</label>
+        <input
+          type="text"
+          value="{{ data[0]?.[6]?.['totalQty'] }}"
+          class="form-control"
+          [disabled]="edit"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-8">
+      <label class="form-label">Address</label>
+      <textarea
+        [disabled]="edit"
+        class="form-control"
+        rows="4"
+        value="{{ data[0]?.[5]?.['address'] }}"
+      ></textarea>
+    </div>
+    <div class="col">
+      <div class="row mb-1">
+        <div class="form-group">
+          <label class="form-label">Order at:</label>
+          <input
+            class="form-control"
+            type="text"
+            value="{{ data[0]?.[6]?.['orderDate'] | date: 'yyyy-MM-dd' }}"
+            disabled
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group">
+          <label class="form-label">Last Update</label>
+          <input
+            class="form-control"
+            type="text"
+            value="{{ data[0]?.[6]?.['lastDate'] | date: 'yyyy-MM-dd' }}"
+            disabled
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- table -->
+<div class="row mb-3">
+  <div class="col col-md-8">
+    <div class="row">
+      <div class="col">
+        <label for="table">Order items</label>
+      </div>
+      <div class="col" *ngIf="cartItem.length >= 0">
+        <div class="row">
+          <div class="col">
+            <span> <strong>New Qty : </strong> {{ computeQty() + calculateNewqty() }} </span>
+          </div>
+          <div class="col">
+            <span> 
+              <strong>New total : </strong> 
+              {{ calculateTotal() + calculateNewTotal() | currency:'USD' }} 
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <table class="table table-striped rightAlign">
+      <thead class="th-dark">
+        <tr>
+          <td>No</td>
+          <td>Name</td>
+          <td>Price</td>
+          <td class="tx-cen">Qty</td>
+          <td>Subtotal</td>
+          <td>Status</td>
+          <td>Delete</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of data; let i = index">
+          <td>{{ i+1 }}</td>
+          <td>{{ item[2] }}</td>
+          <td>{{ item[3] }}</td>
+          <td>
+            <input class="form-control table-input" type="number" placeholder="{{ item[4] }}" 
+            [(ngModel)]="item[4]">
+          </td>
+          <td>{{ item[3] * item[4] | currency:"USD"}}</td>
+          <td>Ordered</td>
+          <td>
+            <!-- Button trigger modal -->
+            <button
+              type="button"
+              class="trash-can"
+              data-bs-toggle="modal"
+              [attr.data-bs-target]="'#exampleModal'+i"
+            >
+              <i class="bi bi-trash"></i>
+            </button>
+
+            <!-- Modal -->
+            <div
+              class="modal fade"
+              id="exampleModal{{i}}"
+              tabindex="-1"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-sm">
+                <div
+                  class="modal-content"
+                  style="text-align: center; align-items: center"
+                >
+                  <div class="modal-body">Do you really want to delete</div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-close"
+                      data-bs-dismiss="modal"
+                    ></button>
+                    <button
+                      (click)="delete(item[0], item[2] * item[3])"
+                      class="btn btn-danger"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr *ngFor="let item of cartItem">
+          <td>*</td>
+          <td>{{item.name}}</td>
+          <td>{{item.price}}</td>
+          <td>
+            <input class="form-control table-input" min="0" type="number" [(ngModel)]="item.quantity"/>
+          </td>
+          <td>{{ item.price!*item.quantity! | currency:"USD"}}</td>
+          <td>
+            New items
+          </td>
+          <td>
+            <div class="row"> 
+              <div class="col">
+                <button (click)="remove(item)" class="trash-can">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- button -->
+<div class="row mb-3">
+  <div class="col-md-auto">
+    <button (click)="addItems()" class="btn btn-primary">Save</button>
+  </div>
+  <div class="col ms-1">
+    <button
+      type="button"
+      class="btn btn-primary"
+      data-bs-toggle="modal"
+      data-bs-target="#list"
+    >
+      <i class="bi bi-plus"></i> Add
+    </button>
+  </div>
+
+  <!-- modal -->
+  <div
+    class="modal fade"
+    id="list"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4>Product List</h4>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <app-product-list2></app-product-list2>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

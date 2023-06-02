@@ -1,0 +1,61 @@
+<div class="col">
+  <table *ngIf="object?.length != 0" class="table table-hover rightAlign">
+    <thead class="th-dark">
+      <tr>
+        <th></th>
+        <th>Id</th>
+        <th>Order No</th>
+        <th>Order Date</th>
+        <th>Customer</th>
+        <th>Total Price</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- (click)="view(order[1]['id'])" -->
+      <tr *ngFor="let item of object , let i = index" (click)="view(item.id)">
+        <td></td>
+        <td>{{ item.id }}</td>
+        <td>{{ item.code }}</td>
+        <td>{{ item.orderDate | date: 'yyyy-MM-dd'}}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.totalPrice | currency: 'USD'}}</td>
+        <td>
+
+            <!-- Button trigger modal -->
+            <button type="button" class="trash-can" data-bs-toggle="modal" 
+            [attr.data-bs-target]="'#exampleModal'+i" (click)="openModal($event)">
+              <i class="bi bi-trash"></i>
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal{{i}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-sm">
+                <div class="modal-content" style="text-align: center;align-items: center;">
+                  
+                  <div class="modal-body">
+                    Do you really want to delete
+                  </div>
+                  <div class="modal-footer">
+                    <button (click)="openModal($event)" type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+                    <button (click)="openModal($event)" (click)="delete(item.id)" class="btn btn-danger">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- if products empty then display a message-->
+  <div
+    *ngIf="object?.length == 0"
+    class="alert alert-warning col-md-12"
+    role="alert"
+  >
+    There is no order.
+  </div>
+</div>

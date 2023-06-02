@@ -1,0 +1,55 @@
+<table class="table table-striped">
+  <thead class="th-dark">
+    <tr>
+      <td>Select</td>
+      <td>Brand</td>
+      <td>Name</td>
+      <td>Price</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr
+      *ngFor="
+        let item of products
+          | paginate
+            : {
+                itemsPerPage: itemsPerpage,
+                currentPage: currentPage,
+                totalItems: totalItems
+              }
+      "
+    >
+      <td>
+        <input 
+          (change)="checkFunc(item,$event)"
+          type="checkbox"
+          class="form-check"
+          [checked]="item.isChecked"
+        />
+      </td>
+      <td>{{ item.brand }}</td>
+      <td>{{ item.name }}</td>
+      <td>{{ item.price }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="input-group">
+  <pagination-controls
+    (pageChange)="currentPage = $event"
+  ></pagination-controls>
+</div>
+
+<div class="row">
+
+  <div class="col-md-auto">
+    <div class="btn btn-primary">
+      {{ tempItem.length }}
+    </div>
+  </div>
+
+  <div class="col">
+    <button data-bs-dismiss="modal" aria-label="Close" (click)="add()" class="btn btn-primary">Add</button>
+  </div>
+  
+</div>

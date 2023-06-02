@@ -73,11 +73,4 @@ export class CartService {
     }
   }
 
-  public placeOrder(order: any){
-
-    const url = "http://localhost:8080/order/create";
-
-    return this.http.post<any>(url,order);
-  }
-
 }

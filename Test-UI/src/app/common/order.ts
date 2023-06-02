@@ -1,3 +1,5 @@
+import { Customer } from "./customer";
+
 export class Order {
 
     id !: number;
@@ -5,4 +7,5 @@ export class Order {
     orderDate !: Date;
     totalPrice !: number;
     totalQty !: number;
+    lastDate !: Date;
 }

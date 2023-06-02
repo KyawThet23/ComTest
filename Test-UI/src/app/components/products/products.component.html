@@ -1,0 +1,45 @@
+<div class="row">
+
+  <div class="col">
+    <h4 style="font-weight: bolder;">Products</h4>
+  </div>
+  
+  <div class="col-md-auto">
+
+    <button class="btn btn-outline-dark me-1" (click)="importFile()">Import</button>
+    <input type="file" #fileInput style="display: none;" (change)="handleFileInput($event)">
+
+    <button class="btn btn-outline-dark me-1" (click)="downloadExcel()">Export to Excel</button>
+
+    <button class="btn btn-primary" routerLink="/addProduct">
+      <span class="bi bi-plus"></span>
+    </button>
+
+  </div>
+</div>
+
+
+<div class="row">
+
+  <div class="col-md-3">
+    <div class="input-group">
+      <span class="bi bi-search input-group-text"></span>
+      <input class="form-control" #myInput (keyup.enter)="doSearch(myInput.value)" type="search" placeholder="Search here" />
+    </div>
+  </div>
+
+  <div class="col-md-2">
+    <div class="input-group">
+      <select [(ngModel)]="id" (change)="onSelect()" class="form-select">
+        <option *ngFor="let option of category" [value]="option.id">{{ option.name }}</option>
+      </select>
+    </div>
+  </div>
+
+</div>
+
+<hr>
+
+<div>
+  <router-outlet></router-outlet>
+</div>

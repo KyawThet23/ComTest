@@ -28,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mit.first.ds.Category;
 import com.mit.first.ds.Product;
 import com.mit.first.payload.ExcelHelper;
-//import com.mit.first.payload.PageResponse;
 import com.mit.first.payload.ProductDto;
 import com.mit.first.repository.CategoryRepository;
 import com.mit.first.repository.ProductRepository;
@@ -55,10 +54,7 @@ public class ProductController {
 	}
 	
 	@GetMapping("/all")
-	public List<ProductDto> getAllProduct(
-//			@RequestParam int pageNo,
-//			@RequestParam int pageSize
-			){
+	public List<ProductDto> getAllProduct(){
 		return productService.getAllClass();
 	}
 	

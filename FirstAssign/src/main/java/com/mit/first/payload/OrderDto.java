@@ -16,4 +16,5 @@ public class OrderDto {
 	private LocalDate orderDate;
 	private float totalPrice;
 	private float toalqty;
+	private LocalDate lastDate;
 }

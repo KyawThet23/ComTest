@@ -1,0 +1,29 @@
+package com.mit.first.repository;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import com.mit.first.ds.Order;
+
+public interface OrderRepo extends JpaRepository<Order, Integer> {
+
+	List<Order> findAllByOrderDate(LocalDate date);
+
+	List<Order> findAllByCode(String code);
+
+	@Query("SELECT concat(c.firstName, ' ', c.lastName) as name, o FROM Customer c "
+			+ "JOIN Order o ON c.id = o.customer.id")
+	List<Object[]> getAllOrderWithCustomer();
+	
+	@Query("SELECT op.id, p.name, p.price, op.quantity , c , o FROM Order o JOIN "
+				+ "OrderedItem op ON o.id =op.order.id "
+				+ "JOIN Product p ON p.id = op.productId "
+				+ "JOIN Customer c ON c.id = o.customer.id "
+				+ "WHERE o.id = :id ")
+	List<Object[]> getAllProductsByOrderId(@Param("id") int id);
+
+}

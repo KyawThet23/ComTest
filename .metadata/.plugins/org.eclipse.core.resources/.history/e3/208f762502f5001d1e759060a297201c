@@ -1,9 +1,0 @@
-package com.mit.first.repository;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.mit.first.ds.Order;
-
-public interface OrderProductRepository extends JpaRepository<Order, Integer> {
-
-}

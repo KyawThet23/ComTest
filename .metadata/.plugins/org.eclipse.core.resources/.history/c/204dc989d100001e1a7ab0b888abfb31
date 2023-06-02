@@ -1,0 +1,17 @@
+package com.mit.first.payload;
+
+import java.time.LocalDate;
+
+import lombok.Data;
+
+@Data
+public class IdProductDto {
+	
+	
+	private int itemId;
+	private String productName;
+	private float price;
+	private int quantity;
+	
+	
+}

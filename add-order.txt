@@ -1,0 +1,136 @@
+<div class="col">
+  <form [formGroup]="customerForm" (ngSubmit)="makeOrder()">
+    <div class="row mb-2">
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label>First Name</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Customer first name"
+              formControlName="firstName"
+            />
+
+            <div
+              *ngIf="
+                firstName?.invalid && (firstName?.dirty || firstName?.touched)
+              "
+              style="color: red"
+            >
+              <div *ngIf="firstName?.errors?.['required']">
+                First Name is required
+              </div>
+
+              <div *ngIf="firstName?.errors?.['minlength']">
+                First name must be at least 2 characters.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="formGroup">
+            <label>Last Name</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Customer last Name"
+              formControlName="lastName"
+            />
+
+            <div
+              *ngIf="
+                lastName?.invalid && (lastName?.dirty || lastName?.touched)
+              "
+              style="color: red"
+            >
+              <div *ngIf="lastName?.errors?.['required']">
+                First Name is required
+              </div>
+
+              <div *ngIf="lastName?.errors?.['minlength']">
+                First name must be at least 2 characters.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label>Phone</label>
+            <input
+              type="phone"
+              class="form-control"
+              placeholder="Customer phone number"
+              formControlName="phone"
+            />
+
+            <div
+              *ngIf="phone?.invalid && (phone?.dirty || phone?.touched)"
+              style="color: red"
+            >
+              <div *ngIf="phone?.errors?.['required']">Phone is required</div>
+
+              <div *ngIf="phone?.errors?.['minlength']">
+                Invalid phone number!!
+              </div>
+
+              <div *ngIf="phone?.errors?.['maxlength']">
+                Invalid phone number!!
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label>Email</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Customer Email"
+              formControlName="email"
+            />
+
+            <div
+              *ngIf="email?.invalid && (email?.dirty || email?.touched)"
+              style="color: red"
+            >
+              <div *ngIf="email?.errors?.['required']">Email is required</div>
+
+              <div *ngIf="email?.errors?.['pattern']">
+                Email must be a valid email address format
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <button
+            [disabled]="!customerForm.valid"
+            class="btn btn-primary mt-24px"
+            type="submit"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <hr />
+
+  <div class="row mb-1">
+    <div #add class="col hidden">
+      <h4>Choose products from this List</h4>
+        <app-product-list2></app-product-list2>
+    </div>
+    <div class="col">
+      <app-cart-details></app-cart-details>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+      <button (click)="expand(add)" class="btn btn-primary">
+        <span [class]="icon"></span>{{ text }}
+      </button>
+    </div>
+  </div>
+</div>

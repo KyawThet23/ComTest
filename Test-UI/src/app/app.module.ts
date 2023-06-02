@@ -1,69 +1,81 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator'
+import { CommonModule } from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SideBarComponent } from './components/side-bar/side-bar.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { ProductsComponent } from './components/dashboard/products/products.component';
-import { OrdersComponent } from './components/dashboard/orders/orders.component';
-import { ProfileComponent } from './components/profile/profile.component';
-import { AboutComponent } from './components/about/about.component';
-import { ProductListComponent } from './components/dashboard/products/product-list/product-list.component';
+import { ProductsComponent } from './components/products/products.component';
+import { OrdersComponent } from './components/orders/orders.component';
+import { ProductListComponent } from './components/products/product-list/product-list.component';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule ,ReactiveFormsModule} from '@angular/forms';
-import { OrderListComponent } from './components/dashboard/orders/order-list/order-list.component';
-import { CartStatusComponent } from './components/cart-status/cart-status.component';
-import { CartDetailsComponent } from './components/cart-details/cart-details.component';
-import { DetailComponent } from './components/dashboard/orders/detail/detail.component'
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { AddComponent } from './components/dashboard/products/add/add.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { OrderListComponent } from './components/orders/order-list/order-list.component';
+import { AddComponent } from './components/products/add/add.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { SharedService } from './service/shared.service';
+import { AddOrderComponent } from './components/orders/add-order/add-order.component';
+import { CartDetailsComponent } from './components/cart-details/cart-details.component';
+import { OrderDetailsComponent } from './components/orders/order-details/order-details.component';
+import { ProductList2Component } from './components/product-list2/product-list2.component';
+import { NgDynamicBreadcrumbModule } from 'ng-dynamic-breadcrumb';
 
 const routes: Routes = [
   {
-    path: 'dashboard',
-    component: DashboardComponent,
+    path: 'product',
+    component: ProductsComponent,
     children: [
-      { path: 'product', component: ProductsComponent, children: [
-        { path: 'search/:keyword', component: ProductListComponent},
-        { path: 'category/:id' , component: ProductListComponent},
-        { path: '' , component: ProductListComponent},
-        { path: 'add', component: AddComponent}
-      ] },
-      { path: 'order', component: OrdersComponent,children: [
-        { path: 'search/:code', component: OrderListComponent},
-        { path: 'date/:date', component: OrderListComponent},
-        { path: '', component: OrderListComponent},
-        { path: 'detail/:id',component:DetailComponent}
-      ] },
-      { path: '', redirectTo: 'product', pathMatch: 'full' },
+      {
+        path: 'search/:keyword',
+        component: ProductListComponent
+      },
+      {
+        path: 'category/:id',
+        component: ProductListComponent
+      },
+      { path: '', component: ProductListComponent },
     ],
   },
-  { path: 'profile', component: ProfileComponent },
-  { path: 'about', component: AboutComponent },
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'cart-details', component: CartDetailsComponent}
+  {
+    path: 'order',
+    component: OrdersComponent,
+    children: [
+      { path: 'search/:code', component: OrderListComponent },
+      { path: 'date/:date', component: OrderListComponent },
+      { path: '', component: OrderListComponent },
+    ],
+  },
+  { path: 'addProduct', component: AddComponent },
+  { path: 'addOrder', component: AddOrderComponent },
+  { path: 'detail/:id', component: OrderDetailsComponent },
+  { path: '', redirectTo: 'product', pathMatch: 'full' },
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
     SideBarComponent,
-    DashboardComponent,
     ProductsComponent,
     OrdersComponent,
     ProductListComponent,
     OrderListComponent,
-    CartStatusComponent,
+    AddComponent,
+    AddOrderComponent,
     CartDetailsComponent,
-    DetailComponent,
-    AddComponent
+    OrderDetailsComponent,
+    ProductList2Component
   ],
-  imports: [BrowserModule, RouterModule.forRoot(routes),HttpClientModule, FormsModule, ReactiveFormsModule, NgbModule , MatPaginatorModule, MatTableModule , NgxPaginationModule],
-  providers: [],
+  imports: [
+    BrowserModule,
+    RouterModule.forRoot(routes),
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgxPaginationModule,
+    CommonModule,
+    NgDynamicBreadcrumbModule
+  ],
+  providers: [SharedService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

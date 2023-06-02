@@ -7,4 +7,13 @@ import { Component } from '@angular/core';
 })
 export class SideBarComponent {
 
+  isCollapsed = true;
+
+  toggleSidebar() {
+    this.isCollapsed = !this.isCollapsed;
+    const main = document.querySelector('.main-content')
+    const sidebar = document.querySelector('.sidebar');
+    sidebar?.classList.toggle('collapsed', this.isCollapsed);
+    main?.classList.toggle('collapsed',this.isCollapsed);
+  }
 }

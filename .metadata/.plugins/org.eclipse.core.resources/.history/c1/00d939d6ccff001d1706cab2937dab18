@@ -1,0 +1,19 @@
+package com.mit.first.payload;
+
+import java.time.LocalDate;
+
+import com.mit.first.ds.Order;
+
+import lombok.Data;
+
+@Data
+public class OrderResponse {
+
+	 private String name;
+	    private int id;
+	    private String code;
+	    private LocalDate orderDate;
+	    private double totalPrice;
+	    private int totalQty;
+	    private LocalDate lastDate;
+}

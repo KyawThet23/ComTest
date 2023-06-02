@@ -5,7 +5,12 @@ import lombok.Data;
 @Data
 public class IdProductDto {
 	
-	private String name;
-	private float price;
+	
+	private int itemId;
+	private String productName;
+	private double price;
 	private int quantity;
+	private CustomerDto customerDto;
+	private OrderDto orderDto;
+	
 }

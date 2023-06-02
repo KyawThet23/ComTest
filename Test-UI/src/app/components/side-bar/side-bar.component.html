@@ -1,28 +1,31 @@
 <div class="sidebar">
-
-  <div class="sidebar-menu mt-2">
-    <div class="brand">
-      Test
+  <div class="col">
+    <div class="row">
+      <div type="button" (click)="toggleSidebar()" class="brand">
+        <i class="bi bi-list"></i>
+      </div>
     </div>
-    <ul>
-      <li>
-        <a routerLink="/dashboard" routerLinkActive="active-link">
-          <span><i class="bi bi-list"></i></span>
-          <span>Dashboard</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/profile" routerLinkActive="active-link">
-          <span><i class="bi bi-person"></i></span>
-          <span>Profile</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/about" routerLinkActive="active-link">
-          <span><i class="bi bi-capslock"></i></span>
-          <span>About</span>
-        </a>
-      </li>
-    </ul>
+    <hr>
+    <div class="row">
+      <ul>
+        <li>
+          <a routerLink="/product" routerLinkActive="active-link">
+            <span><i class="bi bi-tag-fill"></i></span>
+            <span class="text">Products</span>
+          </a>
+        </li>
+        <hr>
+        <li>
+          <a routerLink="/order" routerLinkActive="active-link">
+            <span><i class="bi bi-cart"></i></span>
+            <span class="text">Orders</span>
+          </a>
+        </li>
+        <hr>
+      </ul>
+    </div>
   </div>
+    
+    
 </div>
+

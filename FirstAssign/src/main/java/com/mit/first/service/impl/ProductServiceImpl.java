@@ -7,9 +7,6 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mit.first.ds.Category;
@@ -51,46 +48,21 @@ public class ProductServiceImpl implements ProductService{
 	@Override
 	public List<ProductDto> getAllClass() {
 		
-//		Pageable pageable = PageRequest.of(pageNo, pageSize);
-		
 		List<Product> products = repository.findAll();
-		
-//		List<Product> proList = products.getContent();
 		
 		return products.stream()
 				.map(item -> entityToDto(item))
 				.collect(Collectors.toList());
-		
-//		List<Product> proList = products.getContent();
-//		
-//		PageResponse<Product> response = new PageResponse<>();
-//		response.setData(proList);
-//		response.setPage(new PageModal(
-//				pageNo,pageSize,products.getTotalElements(),products.getTotalPages()
-//				));
-//		
-//		
-//		return response;
 	}
 	
 	@Override
 	public List<ProductDto> getProductByCatId(int id) {
-		
-//		Pageable pageable = PageRequest.of(pageNo, pageSize);
 		
 		List<Product> proList = repository.findAllByCategory_id(id);
 		
 		return proList.stream()
 				.map(item -> entityToDto(item))
 				.collect(Collectors.toList());
-		
-//		PageResponse<Product> response = new PageResponse<>();
-//		response.setPage(new PageModal(
-//				pageNo,pageSize,products.getTotalElements(),products.getTotalPages()
-//				));
-//		response.setData(proList);
-//		
-//		return response;
 	}
 
 	@Override

@@ -1,0 +1,102 @@
+<div class="row">
+  <h4><span class="bi bi-plus"></span> Add New Product</h4>
+</div>
+
+<div class="col-md-7">
+
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+
+    <div class="row mb-3">
+      <div class="col">
+        <div class="input-group">
+          <span class="input-group-text">
+            <i class="bi bi-person-fill"></i>
+          </span>
+          <input
+            placeholder="brand"
+            type="text"
+            class="form-control"
+            formControlName="brand"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col">
+        <div class="input-group">
+          <span class="input-group-text">
+            <i class="bi bi-yelp"></i>
+          </span>
+          <input
+            placeholder="name"
+            type="text"
+            class="form-control"
+            formControlName="name"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col">
+        <div class="input-group">
+          <span class="input-group-text">
+            <i class="bi bi-tag-fill"></i>
+          </span>
+          <input
+            placeholder="price"
+            type="number"
+            class="form-control"
+            formControlName="price"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col">
+        <div class="input-group">
+          <span class="input-group-text">
+            <i class="bi bi-diamond-fill"></i>
+          </span>
+          <input
+            placeholder="quantity"
+            type="number"
+            class="form-control"
+            formControlName="quantity"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col">
+        <div class="input-group">
+          <span class="input-group-text">
+            <i class="bi bi-archive-fill"></i>
+          </span>
+          <select class="form-control" formControlName="catId">
+            <option selected>Category</option>
+            <option *ngFor="let id of categories" [value]="id.id">
+              {{ id.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <button data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-outline-primary" [disabled]="!productForm.valid">
+          Add
+        </button>
+      </div>
+    </div>
+  </form>
+
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="alert alert-primary" role="alert">
+      You have added new product.
+    </div>
+  </div>
+</div>
+

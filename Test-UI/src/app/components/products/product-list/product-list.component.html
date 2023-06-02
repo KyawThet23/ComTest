@@ -1,0 +1,85 @@
+
+  <div class="row" *ngIf="products.length != 0">
+    <div class="col-md-auto">
+
+      <div class="input-group">
+        <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+      </div>
+
+    </div>
+
+    <div class="col-md-auto">
+
+      <div class="input-group">
+        <select [(ngModel)]="itemsPerpage" class="form-select">
+          <option value="3">3</option>
+          <option value="5" selected="true">5</option>
+          <option value="10">10</option>
+        </select>
+
+      </div>
+
+    </div>
+    
+  </div>
+
+  <div class="row ps-3 pe-3" *ngIf="products.length != 0">
+    <table class="table table-striped rightAlign">
+      <thead class="th-dark">
+        <tr>
+          <th style="text-align: start;" scope="col">Select</th>
+          <th scope="col">id</th>
+          <th scope="col">brand</th>
+          <th scope="col">Name</th>
+          <th scope="col">Price</th>
+          <th scope="col">Quantity</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+    
+        <tr  *ngFor="let tempProduct of products | paginate: { itemsPerPage: itemsPerpage, currentPage: currentPage, totalItems: totalItems} , let i = index">
+          <td>
+            <input (change)="selected(tempProduct)" type="checkbox" class="form-check">
+          </td>
+          <td>{{ tempProduct.id }}</td>
+          <td>{{ tempProduct.brand }}</td>
+          <td>{{ tempProduct.name }}</td>
+          <td>{{ tempProduct.price | currency:'USD'}}</td>
+          <td>{{ tempProduct.quantity }}</td>
+          <td>
+    
+            <!-- Button trigger modal -->
+            <button type="button" class="trash-can" data-bs-toggle="modal" [attr.data-bs-target]="'#exampleModal'+i">
+              <i class="bi bi-trash"></i>
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal{{i}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-sm">
+                <div class="modal-content" style="text-align: center;align-items: center;">
+                  
+                  <div class="modal-body">
+                    Do you really want to delete
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+                    <button (click)="delete(tempProduct.id)" class="btn btn-danger">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+
+<!-- if products empty then display a message-->
+<div *ngIf="products?.length == 0" class="alert alert-warning col-md-12" role="alert">
+  No products found.
+</div>

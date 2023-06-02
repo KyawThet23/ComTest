@@ -4,7 +4,7 @@ export class CartItem {
     public id ?: number,
     public name ?: string,
     public price ?: number,
-    public quantity : number = 1 
+    public quantity : number = 1
   ) {}
      
 }

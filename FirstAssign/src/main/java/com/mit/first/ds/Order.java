@@ -4,11 +4,16 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -22,8 +27,10 @@ public class Order {
 	private String code;
 	private LocalDate orderDate;
 	private float totalPrice;
-	private float totalQty;
+	private int totalQty;
+	private LocalDate lastDate;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "order",
 			   cascade = CascadeType.ALL)
 	private  Set<OrderedItem> orderedItems = new HashSet<>();
@@ -32,6 +39,11 @@ public class Order {
 		this.orderedItems.add(item);
 		item.setOrder(this);
 	}
+	
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "customer_id")
+	private Customer customer;
 
 	public Integer getId() {
 		return id;
@@ -65,6 +77,14 @@ public class Order {
 		this.totalPrice = totalPrice;
 	}
 
+	public int getTotalQty() {
+		return totalQty;
+	}
+
+	public void setTotalQty(int totalQty) {
+		this.totalQty = totalQty;
+	}
+
 	public Set<OrderedItem> getOrderedItems() {
 		return orderedItems;
 	}
@@ -73,15 +93,21 @@ public class Order {
 		this.orderedItems = orderedItems;
 	}
 
-	public float getTotalQty() {
-		return totalQty;
+	public Customer getCustomer() {
+		return customer;
 	}
 
-	public void setTotalQty(float totalQty) {
-		this.totalQty = totalQty;
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
-	
-	
-	
+
+	public LocalDate getLastDate() {
+		return lastDate;
+	}
+
+	public void setLastDate(LocalDate lastDate) {
+		this.lastDate = lastDate;
+	}
+
 	
 }

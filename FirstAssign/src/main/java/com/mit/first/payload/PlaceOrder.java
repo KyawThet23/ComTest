@@ -2,6 +2,7 @@ package com.mit.first.payload;
 
 import java.util.List;
 
+import com.mit.first.ds.Customer;
 import com.mit.first.ds.Order;
 import com.mit.first.ds.OrderedItem;
 
@@ -12,6 +13,8 @@ import lombok.Setter;
 @Setter
 public class PlaceOrder {
 	
+	private Customer customer;
 	private List<OrderedItem> orderItems;
 	private Order order;
+	
 }
