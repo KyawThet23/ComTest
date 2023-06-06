@@ -3,9 +3,12 @@
     <div class="col-md-auto">
 
       <div class="input-group">
-        <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+        <pagination-controls (pageChange)="currentPage = $event"
+                              [maxSize]="maxSize"
+                              previousLabel="prev"
+                              nextLabel="next"
+        ></pagination-controls>
       </div>
-
     </div>
 
     <div class="col-md-auto">

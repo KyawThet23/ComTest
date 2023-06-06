@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { Category } from 'src/app/common/category';
 import { CategoryService } from 'src/app/service/category.service';
 import { ProductService } from 'src/app/service/product.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-products',
@@ -16,25 +15,11 @@ export class ProductsComponent implements OnInit {
 
   id !: number;
   category : Category[] = [];
-
-  productForm: FormGroup;
   
-
   constructor(private router : Router, 
               private productService: ProductService , 
-              private categoryService: CategoryService,
-              private fb : FormBuilder,
-              private service : ProductService,
-              private route : Router) 
-              {
-                this.productForm = this.fb.group({
-                  brand: ['',Validators.required],
-                  name: ['', Validators.required],
-                  price: ['',Validators.required],
-                  quantity: ['',Validators.required],
-                  catId: [Number, Validators.required]
-                });
-              }
+              private categoryService: CategoryService) 
+              {}
 
   ngOnInit(): void {
     this.categoryService.getAllCategory().subscribe(data => this.category = data);
@@ -65,19 +50,5 @@ export class ProductsComponent implements OnInit {
     this.productService.importExcelFile(form).subscribe();
 
     window.location.reload();
-  }
-
-  expend(event : any){
-    if (event.style.display === "block") {
-      event.style.display = "none";
-    } else {
-        event.style.display = "block";
-    }  
-  }
-
-  onSubmit(){
-    const product = this.productForm.value;
-    this.service.createProduct(product).subscribe();
-    this.route.navigateByUrl('/product')
   }
 }

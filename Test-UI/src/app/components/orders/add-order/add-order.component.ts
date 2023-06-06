@@ -5,7 +5,6 @@ import { CartService } from 'src/app/service/cart.service';
 import { ProductService } from 'src/app/service/product.service';
 import { Ordered} from 'src/app/common/ordered'
 import { Customer } from 'src/app/common/customer';
-import { OrderResponse } from 'src/app/common/order-response';
 import { CartItem } from 'src/app/common/cart-item';
 import { OrderItem } from 'src/app/common/order-item';
 import { Router } from '@angular/router';
@@ -87,8 +86,6 @@ export class AddOrderComponent implements OnInit{
 
     let customer : Customer = this.customerForm.value;
 
-    let order = new OrderResponse(this.totalPrice,this.totalQuantity);
-
     const cartItem = this.cartService.cartItem;
 
     let orderItem : OrderItem[] = cartItem.map( item => 
@@ -99,7 +96,8 @@ export class AddOrderComponent implements OnInit{
   
     ordered.customer = customer;
     ordered.orderItems = orderItem;
-    ordered.order = order;
+    ordered.totalPrice = this.totalPrice;
+    ordered.totalQty = this.totalQuantity;
 
     this.OrderService.placeOrder(ordered).subscribe();
 

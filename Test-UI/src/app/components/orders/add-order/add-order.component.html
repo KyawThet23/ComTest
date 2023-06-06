@@ -1,151 +1,151 @@
+<div class="col-md-6">
+  <div class="row">
+    <div class="col">
+      <h4 class="mb-2">
+        <span class="bi bi-plus" style="font-size: 30px"></span>
+        <span style="font-weight: bolder">New Order</span>
+      </h4>
+    </div>
+  </div>
+</div>
 
-  <h4 class="mb-2">
-    <span class="bi bi-plus" style="font-size: 30px"></span>
-    <span style="font-weight: bolder">New Order</span>
-  </h4>
-
-  <div class="col ms-1">
-  
-    <form [formGroup]="customerForm" (ngSubmit)="makeOrder()">
-
-      <div class="col-md-6">
-        
-        <div class="row mb-2">
-          <div class="col">
-            <div class="form-group">
-              <div class="input-group">
-                <span class="bi bi-people input-group-text"></span>
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="first name"
-                  formControlName="firstName"
-                />
-              </div>
-
-              <div
-                *ngIf="
-                  firstName?.invalid && (firstName?.dirty || firstName?.touched)
-                "
-                style="color: red"
-              >
-                <div *ngIf="firstName?.errors?.['required']">
-                  First Name is required
-                </div>
-
-                <div *ngIf="firstName?.errors?.['minlength']">
-                  First name must be at least 2 characters.
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="formGroup">
-              <div class="input-group">
-                <span class="bi bi-people input-group-text"></span>
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Last Name"
-                  formControlName="lastName"
-                />
-              </div>
-
-              <div
-                *ngIf="
-                  lastName?.invalid && (lastName?.dirty || lastName?.touched)
-                "
-                style="color: red"
-              >
-                <div *ngIf="lastName?.errors?.['required']">
-                  First Name is required
-                </div>
-
-                <div *ngIf="lastName?.errors?.['minlength']">
-                  First name must be at least 2 characters.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row mb-2">
-          <div class="col">
-            <div class="form-group">
-              <div class="input-group">
-                <span class="bi bi-phone input-group-text"></span>
-                <input
-                  type="phone"
-                  class="form-control"
-                  placeholder="Phone number"
-                  formControlName="phone"
-                />
-              </div>
-
-              <div
-                *ngIf="phone?.invalid && (phone?.dirty || phone?.touched)"
-                style="color: red"
-              >
-                <div *ngIf="phone?.errors?.['required']">Phone is required</div>
-
-                <div *ngIf="phone?.errors?.['minlength']">
-                  Invalid phone number!!
-                </div>
-
-                <div *ngIf="phone?.errors?.['maxlength']">
-                  Invalid phone number!!
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="col">
-              <div class="form-group">
-                <div class="input-group">
-                  <span class="bi bi-envelope-at input-group-text"></span>
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Email"
-                    formControlName="email"
-                  />
-                </div>
-
-                <div
-                  *ngIf="email?.invalid && (email?.dirty || email?.touched)"
-                  style="color: red"
-                >
-                  <div *ngIf="email?.errors?.['required']">
-                    Email is required
-                  </div>
-
-                  <div *ngIf="email?.errors?.['pattern']">
-                    Email must be a valid email address format
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row mb-2">
+<div class="col ms-1">
+  <form [formGroup]="customerForm" (ngSubmit)="makeOrder()">
+    <div class="col-md-6">
+      <div class="row mb-2">
+        <div class="col">
           <div class="form-group">
             <div class="input-group">
-              <textarea
-                placeholder="address"
+              <span class="bi bi-people input-group-text"></span>
+              <input
+                type="text"
                 class="form-control"
-                rows="4"
-                formControlName="address"
-              ></textarea>
+                placeholder="first name"
+                formControlName="firstName"
+              />
+            </div>
+
+            <div
+              *ngIf="
+                firstName?.invalid && (firstName?.dirty || firstName?.touched)
+              "
+              style="color: red"
+            >
+              <div *ngIf="firstName?.errors?.['required']">
+                First Name is required
+              </div>
+
+              <div *ngIf="firstName?.errors?.['minlength']">
+                First name must be at least 2 characters.
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="row">
+        <div class="col">
+          <div class="formGroup">
+            <div class="input-group">
+              <span class="bi bi-people input-group-text"></span>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Last Name"
+                formControlName="lastName"
+              />
+            </div>
+
+            <div
+              *ngIf="
+                lastName?.invalid && (lastName?.dirty || lastName?.touched)
+              "
+              style="color: red"
+            >
+              <div *ngIf="lastName?.errors?.['required']">
+                First Name is required
+              </div>
+
+              <div *ngIf="lastName?.errors?.['minlength']">
+                First name must be at least 2 characters.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-2">
+        <div class="col">
+          <div class="form-group">
+            <div class="input-group">
+              <span class="bi bi-phone input-group-text"></span>
+              <input
+                type="phone"
+                class="form-control"
+                placeholder="Phone number"
+                formControlName="phone"
+              />
+            </div>
+
+            <div
+              *ngIf="phone?.invalid && (phone?.dirty || phone?.touched)"
+              style="color: red"
+            >
+              <div *ngIf="phone?.errors?.['required']">Phone is required</div>
+
+              <div *ngIf="phone?.errors?.['minlength']">
+                Invalid phone number!!
+              </div>
+
+              <div *ngIf="phone?.errors?.['maxlength']">
+                Invalid phone number!!
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
           <div class="col">
-            <button
+            <div class="form-group">
+              <div class="input-group">
+                <span class="bi bi-envelope-at input-group-text"></span>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Email"
+                  formControlName="email"
+                />
+              </div>
+
+              <div
+                *ngIf="email?.invalid && (email?.dirty || email?.touched)"
+                style="color: red"
+              >
+                <div *ngIf="email?.errors?.['required']">Email is required</div>
+
+                <div *ngIf="email?.errors?.['pattern']">
+                  Email must be a valid email address format
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-2">
+        <div class="form-group">
+          <div class="input-group">
+            <textarea
+              placeholder="address"
+              class="form-control"
+              rows="4"
+              formControlName="address"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <button
             type="submit"
             [disabled]="!customerForm.valid"
             class="form-control"
@@ -153,36 +153,51 @@
           >
             Save
           </button>
-          </div>
-          <div class="col-md-auto">
-            <button data-bs-toggle="modal" data-bs-target="#list" type="button" class="btn btn-primary">
-              <i class="bi bi-plus"></i> Add product
-            </button>
-          </div>
+        </div>
+        <div class="col-md-auto">
+          <button
+            data-bs-toggle="modal"
+            data-bs-target="#list"
+            type="button"
+            class="btn btn-primary"
+          >
+            <i class="bi bi-plus"></i> Add product
+          </button>
         </div>
       </div>
-
-    </form>
-
-    <div class="col-md-8 mt-2">
-      <app-cart-details (totalCalculated)="forTotal($event)" (totalQty)="forQty($event)">
-      </app-cart-details>
     </div>
+  </form>
 
+  <div class="col-md-8 mt-2">
+    <app-cart-details
+      (totalCalculated)="forTotal($event)"
+      (totalQty)="forQty($event)"
+    >
+    </app-cart-details>
   </div>
+</div>
 
-  <div class="modal fade" id="list" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-              <h4>Product List</h4>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <app-product-list2></app-product-list2>
-          </div>
-        </div>
+<div
+  class="modal fade"
+  id="list"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>Product List</h4>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
-    
+      <div class="modal-body">
+        <app-product-list2></app-product-list2>
+      </div>
+    </div>
   </div>
+</div>

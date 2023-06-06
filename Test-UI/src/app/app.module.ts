@@ -18,7 +18,6 @@ import { AddOrderComponent } from './components/orders/add-order/add-order.compo
 import { CartDetailsComponent } from './components/cart-details/cart-details.component';
 import { OrderDetailsComponent } from './components/orders/order-details/order-details.component';
 import { ProductList2Component } from './components/product-list2/product-list2.component';
-import { NgDynamicBreadcrumbModule } from 'ng-dynamic-breadcrumb';
 
 const routes: Routes = [
   {
@@ -72,8 +71,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     NgxPaginationModule,
-    CommonModule,
-    NgDynamicBreadcrumbModule
+    CommonModule
   ],
   providers: [SharedService],
   bootstrap: [AppComponent],

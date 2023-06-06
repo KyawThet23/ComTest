@@ -1,12 +1,14 @@
 <div class="row">
   <div class="col">
-    <h4 style="font-weight: bolder;">Orders</h4>
+    <h4 style="font-weight: bolder">Orders</h4>
   </div>
   <div class="col-md-auto">
-    <a (click)="addOrder()" class="btn btn-primary">
-      <span class="bi bi-plus"></span> New Order
+    <button (click)="download()" class="btn btn-outline-dark btn-sm me-1">
+      <i class="fa-regular fa-file-excel"></i> Download
+    </button>
+    <a (click)="addOrder()" class="btn btn-outline-primary btn-sm">
+      <span class="bi bi-plus"></span> New
     </a>
-
   </div>
 </div>
 
@@ -14,13 +16,24 @@
   <div class="col-md-3">
     <div class="input-group">
       <span class="bi bi-search input-group-text"></span>
-      <input class="form-control" #myInput (keyup.enter)="searchCode(myInput.value)" type="search" placeholder="Search here" />
+      <input
+        class="form-control"
+        #myInput
+        (keyup.enter)="searchCode(myInput.value)"
+        type="search"
+        placeholder="Search here"
+      />
     </div>
   </div>
   <div class="col-md-3">
     <div class="input-group">
       <span class="bi bi-calendar input-group-text"></span>
-      <input type="date" [(ngModel)]="selectedDate" (change)="importDate()" class="form-control">
+      <input
+        type="date"
+        [(ngModel)]="selectedDate"
+        (change)="importDate()"
+        class="form-control"
+      />
     </div>
   </div>
 </div>

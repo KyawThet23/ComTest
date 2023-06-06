@@ -1,4 +1,4 @@
-import { Component, OnInit , ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CartItem } from 'src/app/common/cart-item';
 import { Product } from 'src/app/common/product';
@@ -8,39 +8,44 @@ import { ProductService } from 'src/app/service/product.service';
 @Component({
   selector: 'app-product-list',
   templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.css']
+  styleUrls: ['./product-list.component.css'],
 })
 export class ProductListComponent implements OnInit {
-
-  products : Product[] = []
-  searchMode : boolean= false;
+  products: Product[] = [];
+  searchMode: boolean = false;
   categoryMode: boolean = false;
 
   // new properties for pagination
   currentPage: number = 1;
   itemsPerpage: number = 5;
   totalItems: number = this.products.length;
+  maxSize : number = 5;
 
-  previousKeyword: string = "";
+  previousKeyword: string = '';
 
-  constructor(private productsService: ProductService,
-              private route: ActivatedRoute,
-              private cartService : CartService){}
+  constructor(
+    private productsService: ProductService,
+    private route: ActivatedRoute,
+    private cartService: CartService
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(() => {
       this.listProduct();
-    })
+    });
+  }
+
+  onPageChange(page: number){
+    this.currentPage = page;
   }
 
   listProduct() {
-
     this.searchMode = this.route.snapshot.paramMap.has('keyword');
     this.categoryMode = this.route.snapshot.paramMap.has('id');
 
-    if(this.searchMode) {
+    if (this.searchMode) {
       this.handleSearch();
-    } else if(this.categoryMode){
+    } else if (this.categoryMode) {
       this.categorySearch();
     } else {
       this.handleProduct();
@@ -48,17 +53,19 @@ export class ProductListComponent implements OnInit {
   }
 
   categorySearch() {
-    const id: string = this.route.snapshot.paramMap.get('id')!; 
+    const id: string = this.route.snapshot.paramMap.get('id')!;
 
     this.previousKeyword = id;
 
-    this.productsService.getByCatId(id)
-    .subscribe(data => this.products = data)
+    this.productsService
+      .getByCatId(id)
+      .subscribe((data) => (this.products = data));
   }
 
   handleProduct() {
-    this.productsService.getAllProduct()
-      .subscribe(data => this.products = data);
+    this.productsService
+      .getAllProduct()
+      .subscribe((data) => (this.products = data));
   }
 
   handleSearch() {
@@ -66,14 +73,15 @@ export class ProductListComponent implements OnInit {
 
     this.previousKeyword = theKeyword;
 
-    this.productsService.getProductByName(theKeyword)
-                  .subscribe(data => this.products = data)
+    this.productsService
+      .getProductByName(theKeyword)
+      .subscribe((data) => (this.products = data));
 
-                  console.log(this.products);
+    console.log(this.products);
   }
 
-  selected(product : Product){
-    let theCartItem = new CartItem(product.id , product.name, product.price);
+  selected(product: Product) {
+    let theCartItem = new CartItem(product.id, product.name, product.price);
 
     this.cartService.addToCart(theCartItem);
   }
@@ -83,9 +91,8 @@ export class ProductListComponent implements OnInit {
     window.location.reload();
   }
 
-  updateItemsPerPage(value:string){
-      this.totalItems = +value;
-      this.currentPage = 1;
+  updateItemsPerPage(value: string) {
+    this.totalItems = +value;
+    this.currentPage = 1;
   }
-
 }

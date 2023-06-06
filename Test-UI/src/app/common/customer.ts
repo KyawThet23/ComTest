@@ -1,7 +1,8 @@
 export class Customer {
 
-  lastName !: string;
+  id !: number;
   firstName !: string;
+  lastName !: string;
   phone !: string;
   email !: string;
   address !: string;

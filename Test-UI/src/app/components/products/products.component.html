@@ -2,15 +2,19 @@
 
   <div class="col">
     <h4 style="font-weight: bolder;">Products</h4>
-  </div>
+  </div> 
   
   <div class="col-md-auto">
 
-    <button class="btn btn-outline-dark me-1" (click)="importFile()">Import</button>
+    <button class="btn btn-outline-dark me-1" (click)="importFile()">
+      <i class="fa-regular fa-light fa-file-excel"></i> Upload
+    </button>
     <input type="file" #fileInput style="display: none;" (change)="handleFileInput($event)">
 
-    <button class="btn btn-outline-dark me-1" (click)="downloadExcel()">Export to Excel</button>
-
+    <button class="btn btn-outline-dark me-1" (click)="downloadExcel()">
+      Download
+    </button>
+    
     <button class="btn btn-primary" routerLink="/addProduct">
       <span class="bi bi-plus"></span>
     </button>

@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CartItem } from 'src/app/common/cart-item';
 import { NewOrderItems } from 'src/app/common/new-order-items';
 import { OrderItem } from 'src/app/common/order-item';
+import { OrderedItem } from 'src/app/common/ordered-item';
 import { CartService } from 'src/app/service/cart.service';
 import { OrderService } from 'src/app/service/order.service';
 
@@ -86,6 +87,7 @@ export class OrderDetailsComponent implements OnInit {
     this.orderService.addNewItem(id, newItems).subscribe();
 
     window.location.reload();
+
   }
 
   delete(id: number, total: number) {
@@ -133,4 +135,27 @@ export class OrderDetailsComponent implements OnInit {
     return total;
   }
 
+  downloadPdf(){
+    const orderId: number = +this.route.snapshot.paramMap.get('id')!;
+    this.orderService.generatePdf(orderId).subscribe(
+      (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        document.body.appendChild(a);
+        a.href = url;
+        a.download = 'order-detail.pdf';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      },
+      (error: any) => {
+        console.error('Error occurred while generating PDF:', error);
+      }
+    );
+  }
+
+  downloadExcel(){
+    const orderId: number = +this.route.snapshot.paramMap.get('id')!;
+    this.orderService.generateExcel(orderId);
+  }
 }

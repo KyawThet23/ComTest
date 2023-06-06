@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { Product } from '../common/product';
 import { saveAs } from 'file-saver';
-import { ProductPaginate } from '../common/product-paginate';
 
 @Injectable({
   providedIn: 'root'

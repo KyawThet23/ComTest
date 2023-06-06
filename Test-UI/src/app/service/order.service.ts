@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Order } from '../common/order';
 import { OrderReceive } from '../common/order-receive';
 import { NewOrderItems } from '../common/new-order-items';
+import { saveAs } from 'file-saver';
 
 @Injectable({
   providedIn: 'root'
@@ -71,5 +72,32 @@ export class OrderService {
     const url = `${this.baseUrl}/create`;
 
     return this.http.post<any>(url,order);
+  }
+
+  generatePdf(id: number): Observable<Blob> {
+    const url = `${this.baseUrl}/generate-pdf/${id}`;
+    return this.http.get(url, {
+      responseType: 'blob'
+    });
+  }
+
+  generateExcel(id : number) : void {
+    
+    const url = `${this.baseUrl}/detail-excel/${id}`;
+
+    this.http.get(url , {responseType:'blob'})
+      .subscribe(data => {
+        saveAs(data , 'details.xlxs')
+      })
+  }
+
+  generateListExcel() : void {
+
+    const url = `${this.baseUrl}/excel`;
+
+    this.http.get(url , {responseType:'blob'})
+      .subscribe(data => {
+        saveAs(data , 'orders.xlxs')
+      })
   }
 }

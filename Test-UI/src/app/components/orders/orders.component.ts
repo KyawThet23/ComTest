@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { OrderService } from 'src/app/service/order.service';
 
 @Component({
   selector: 'app-orders',
@@ -10,7 +11,9 @@ export class OrdersComponent {
 
   selectedDate !: string;
 
-  constructor(private route : Router){}
+  constructor(
+    private route : Router,
+    private service: OrderService){}
 
   searchCode(data : string){
     this.route.navigateByUrl(`/order/search/${data}`);
@@ -28,5 +31,9 @@ export class OrdersComponent {
 
   addOrder(){
     this.route.navigateByUrl('/addOrder')
+  }
+
+  download(){
+    this.service.generateListExcel();
   }
 }
