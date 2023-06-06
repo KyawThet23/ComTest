@@ -1,0 +1,145 @@
+package com.mit.first.payload;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.mit.first.ds.Product;
+
+public class FileHelper {
+	
+	//For Product
+	static String [] productHeaders = {"Id","brand","name","price","quantity","category_id"};
+	static String productSheet = "Product";
+	
+	// To check if excel format
+		public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+		
+		//to check if excel-file
+		public static boolean hasExcelFormat(MultipartFile file) {
+			
+			if ( !TYPE.equals(file.getContentType())) {
+				return false;
+			}
+			return true;
+		}
+		
+	static String [] orderHeadres = {"Id","Order No.","Order date","Customer Name","Total Price","Total Qty"};
+		
+	
+	//import-excel
+	public static ByteArrayInputStream productToExcel(List<Product> products) {
+		
+		try (
+			Workbook workbook = new XSSFWorkbook();
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			) {
+			
+			Sheet sheet = workbook.createSheet(productSheet);
+			
+			Row headerRow = sheet.createRow(0);
+			
+			for (int i = 0; i < productHeaders.length; i++) {
+				Cell cell = headerRow.createCell(i);
+				cell.setCellValue(productHeaders[i]);
+			}
+			
+			int rowIndex = 1;
+			
+			for (Product pro : products) {
+				Row row = sheet.createRow(rowIndex++);
+				
+				row.createCell(0).setCellValue(pro.getId());
+				row.createCell(1).setCellValue(pro.getBrand());
+				row.createCell(2).setCellValue(pro.getName());
+				row.createCell(3).setCellValue(pro.getPrice());
+				row.createCell(4).setCellValue(pro.getQuantity());
+				row.createCell(5).setCellValue(pro.getCategory().getId());
+			}
+			
+			workbook.write(out);
+			return new ByteArrayInputStream(out.toByteArray());
+			
+		} catch (IOException e) {
+			throw new RuntimeException("Fail to import data into excel file" + e.getMessage());
+		}
+	}
+	
+	
+	public static ByteArrayInputStream orderToExcel(List<OrderResponse> dtos) {
+		
+		try (
+			 Workbook book = new XSSFWorkbook();
+			 ByteArrayOutputStream out = new ByteArrayOutputStream()	
+				) {
+			
+			Sheet sheet = book.createSheet("orders");
+			
+			Row header = sheet.createRow(0);
+			
+			for (int i = 0; i < orderHeadres.length; i++) {
+				Cell cell = header.createCell(i);
+				cell.setCellValue(orderHeadres[i]);
+			}
+			
+			int rowIndex = 1;
+			
+			for (OrderResponse dto : dtos) {
+				
+				Row row = sheet.createRow(rowIndex++);
+				
+				row.createCell(0).setCellValue(dto.getId());
+				row.createCell(1).setCellValue(dto.getCode());
+				row.createCell(2).setCellValue(dto.getOrderDate());
+				row.createCell(3).setCellValue(dto.getName());
+				row.createCell(4).setCellValue(dto.getTotalPrice());
+				row.createCell(5).setCellValue(dto.getTotalQty());
+				
+			}
+			
+			book.write(out);
+			return new ByteArrayInputStream(out.toByteArray());
+			
+		} catch (Exception e) {
+			throw new RuntimeException("Fail to import data into excel file" + e.getMessage());
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

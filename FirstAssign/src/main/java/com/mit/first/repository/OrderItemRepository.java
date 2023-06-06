@@ -10,8 +10,9 @@ import com.mit.first.ds.OrderedItem;
 
 public interface OrderItemRepository extends JpaRepository<OrderedItem, Integer>{
 	
+	
 	@Query("SELECT oi FROM OrderedItem oi WHERE oi.productId = :productId AND oi.order.id = :orderId")
 	public Optional<OrderedItem> findItem(@Param("productId") int productId,
 										  @Param("orderId") int orderId);
- 
+
 }

@@ -15,6 +15,7 @@ public class PlaceOrder {
 	
 	private Customer customer;
 	private List<OrderedItem> orderItems;
-	private Order order;
+	private float totalPrice;
+	private int totalQty;
 	
 }

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.mit.first.ds.Order;
+import com.mit.first.payload.IdProductDto;
 
 public interface OrderRepo extends JpaRepository<Order, Integer> {
 
@@ -20,7 +21,13 @@ public interface OrderRepo extends JpaRepository<Order, Integer> {
 			+ "JOIN Order o ON c.id = o.customer.id")
 	List<Object[]> getAllOrderWithCustomer();
 	
-	@Query("SELECT op.id, p.name, p.price, op.quantity , c , o FROM Order o JOIN "
+//	<-- Query to find order's product in sql-->
+//	select product.name , product.price , order_item.quantity , customer.* , order_.* from order_ 
+//	join order_item on order_.id= order_item.order_id 
+//	join product on product.id= order_item.product_id 
+//	join customer on customer.id = order_.customer_id
+//	where order_.id = 1
+	@Query("SELECT p.id, op.id, p.name, p.price, op.quantity , c , o FROM Order o JOIN "
 				+ "OrderedItem op ON o.id =op.order.id "
 				+ "JOIN Product p ON p.id = op.productId "
 				+ "JOIN Customer c ON c.id = o.customer.id "

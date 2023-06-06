@@ -1,9 +1,15 @@
 package com.mit.first.controller;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,10 +19,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.itextpdf.text.DocumentException;
+import com.mit.first.payload.FileHelper;
 import com.mit.first.payload.IdProductDto;
 import com.mit.first.payload.NewOrderItem;
 import com.mit.first.payload.OrderResponse;
 import com.mit.first.payload.PlaceOrder;
+import com.mit.first.repository.OrderRepo;
 import com.mit.first.service.OrderService;
 
 import jakarta.persistence.EntityManager;
@@ -31,7 +40,17 @@ public class OrderController {
 	private OrderService service;
 	@Autowired
 	private EntityManager entityManager;
+	@Autowired
+	private OrderRepo repo;
+
+	private FileHelper file;
 	
+	public OrderController(FileHelper file) {
+		super();
+		this.file = file;
+	}
+
+
 	@PostMapping("/create")
 	public String createOrder(@RequestBody PlaceOrder request) {
 		
@@ -47,30 +66,24 @@ public class OrderController {
 		return service.getAll();
 	}
 	
-//	<-- Query to find order's product in sql-->
-//	select product.name , product.price , order_item.quantity , customer.* , order_.* from order_ 
-//	join order_item on order_.id= order_item.order_id 
-//	join product on product.id= order_item.product_id 
-//	join customer on customer.id = order_.customer_id
-//	where order_.id = 1
 	
 	@GetMapping("/products/{id}")
-	public List<IdProductDto> getProductByOrderid(@PathVariable int id){
+	public List<Object[]> getProductByOrderid(@PathVariable int id){
+		return repo.getAllProductsByOrderId(id);
+		//return service.getAllProductsById(id);
+	}
+	
+	@GetMapping("excel")
+	public ResponseEntity<InputStreamResource> getExcelFile () {
 		
-		String script = "SELECT p.id, op.id, p.name, p.price, op.quantity , c , o "
-				+ "FROM Order o "
-				+ "JOIN OrderedItem op ON o.id =op.order.id "
-				+ "JOIN Product p ON p.id = op.productId "
-				+ "JOIN Customer c ON c.id = o.customer.id "
-				+ "WHERE o.id = :id ";
 		
-		Query query = entityManager.createQuery(script);
-		query.setParameter("id", id);
+		String filename = "orders.xlsx";
+		InputStreamResource file = new InputStreamResource(FileHelper.orderToExcel(service.getAll()));
 		
-		@SuppressWarnings("unchecked")
-		List<IdProductDto> result = query.getResultList();
-		
-		return result;
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+				.contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+		        .body(file);
 	}
 	
 	@GetMapping("/date/{date}")
@@ -126,4 +139,41 @@ public class OrderController {
 		service.deleteOrderedItem(orderId,itemId,subtotal);
 	}
 	
+	@GetMapping("/generate-pdf/{id}")
+	public ResponseEntity<ByteArrayResource> detailPdf(@PathVariable int id) throws IOException, DocumentException {
+		
+		IdProductDto dtos = service.getAllProductsById(id);
+		
+		// Call your existing API method to generate the PDF based on the provided ID
+        byte[] pdfBytes = file.generatePdfFromDto(dtos);
+
+        // Create a ByteArrayResource from the generated PDF bytes
+        ByteArrayResource resource = new ByteArrayResource(pdfBytes);
+
+        // Set the response headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=generated.pdf");
+
+        // Return the ResponseEntity with the resource and headers
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(pdfBytes.length)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
+    }
+		
+	@GetMapping("/detail-excel/{id}")
+	public ResponseEntity<InputStreamResource> getDetailExcelFile(@PathVariable int id){
+		
+		String filename = "details.xlsx";
+		IdProductDto dto = service.getAllProductsById(id);
+		
+		InputStreamResource file = new InputStreamResource(FileHelper.detailToExcel(dto));
+		
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+				.contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+		        .body(file);
+	}
 }
+	

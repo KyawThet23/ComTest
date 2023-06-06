@@ -1,0 +1,79 @@
+private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	
+	private static String formatFloat(float value) {
+        return String.format("%.2f", value);
+    }
+	
+	public static void generatePdf(IdProductDto detail , String outputFile) throws DocumentException ,IOException {
+		
+		Document document = new Document();
+		PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
+		document.open();
+		
+		//Customer data
+		PdfPTable customer = new PdfPTable(2);
+		customer.setWidthPercentage(50);
+		customer.setSpacingBefore(20);
+		customer.setSpacingAfter(20);
+		
+		//Add customer data
+		customer.addCell(createCell("Name:", Element.ALIGN_LEFT));
+		customer.addCell(createCell(detail.getCustomer().getFirstName(), Element.ALIGN_RIGHT));
+		
+		customer.addCell(createCell("Phone", Element.ALIGN_RIGHT));
+		customer.addCell(createCell(detail.getCustomer().getPhone(), Element.ALIGN_RIGHT));
+		
+		customer.addCell(createCell("Email", Element.ALIGN_RIGHT));
+		customer.addCell(createCell(detail.getCustomer().getEmail(), Element.ALIGN_RIGHT));
+		
+		customer.addCell(createCell("Address", Element.ALIGN_RIGHT));
+		customer.addCell(createCell(detail.getCustomer().getAddress(), Element.ALIGN_RIGHT));
+		
+		//Order detail
+		PdfPTable order = new PdfPTable(2);
+		order.setWidthPercentage(50);
+        order.setSpacingAfter(20);
+        
+        //Add order data
+        order.addCell(createCell("Order No.", Element.ALIGN_LEFT));
+        order.addCell(createCell(detail.getOrder().getCode(), Element.ALIGN_RIGHT));
+        
+        order.addCell(createCell("Order at:", Element.ALIGN_LEFT));
+        order.addCell(createCell(detail.getOrder().getOrderDate().format(DATE_FORMATTER), 
+        		Element.ALIGN_RIGHT));
+        
+        order.addCell(createCell("Total price", Element.ALIGN_LEFT));
+        order.addCell(createCell(formatFloat(detail.getOrder().getTotalPrice()), 
+        		Element.ALIGN_RIGHT));
+        
+        order.addCell(createCell("Total Qty", Element.ALIGN_LEFT));
+        order.addCell(createCell( formatFloat(detail.getOrder().getTotalQty()) ,
+        		Element.ALIGN_RIGHT));
+        
+        order.addCell(createCell("Last Update", Element.ALIGN_LEFT));
+        order.addCell(createCell(detail.getOrder().getLastDate().format(DATE_FORMATTER), 
+        		Element.ALIGN_RIGHT));
+        
+        document.add(customer);
+        document.add(order);
+        
+        document.close();
+        writer.close();
+        
+	}
+	
+	private static PdfPCell createCell(String content, int alignment) {
+        PdfPCell cell = new PdfPCell(new Phrase(content));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setHorizontalAlignment(alignment);
+        return cell;
+    }
+
+    private PdfPCell createCell(String content, int alignment, boolean bold) {
+        PdfPCell cell = createCell(content, alignment);
+        if (bold) {
+            Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
+            cell.setPhrase(new Phrase(content, boldFont));
+        }
+        return cell;
+    }

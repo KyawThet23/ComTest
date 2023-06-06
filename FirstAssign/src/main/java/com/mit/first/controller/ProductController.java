@@ -27,7 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mit.first.ds.Category;
 import com.mit.first.ds.Product;
-import com.mit.first.payload.ExcelHelper;
+import com.mit.first.payload.FileHelper;
 import com.mit.first.payload.ProductDto;
 import com.mit.first.repository.CategoryRepository;
 import com.mit.first.repository.ProductRepository;
@@ -83,7 +83,7 @@ public class ProductController {
 	@PostMapping("/data")
 	public ResponseEntity<String> getData(@RequestParam("file") MultipartFile file){
 		
-		if (ExcelHelper.hasExcelFormat(file)) {
+		if (FileHelper.hasExcelFormat(file)) {
 			try {
 				
 				try {

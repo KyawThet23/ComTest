@@ -1,0 +1,23 @@
+package com.mit.first.payload;
+
+import java.util.List;
+
+import com.mit.first.ds.Customer;
+import com.mit.first.ds.Order;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class IdProductDto {
+	
+	private List<OrderItemDetail> items;
+	private Customer customerDto;
+	private Order orderDto;
+	
+}

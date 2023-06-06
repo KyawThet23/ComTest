@@ -1,0 +1,301 @@
+package com.mit.first.payload;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.mit.first.ds.Customer;
+import com.mit.first.ds.Order;
+import com.mit.first.ds.Product;
+
+@Configuration
+public class FileHelper{
+	
+//	Excel
+	
+	// To check if excel format
+	public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+		
+	//to check if excel-file
+	public static boolean hasExcelFormat(MultipartFile file) {
+			
+		if ( !TYPE.equals(file.getContentType())) {
+			return false;
+		}
+		return true;
+	}
+	
+	//Products Header
+	static String [] productHeaders = {"Id","brand","name","price","quantity","category_id"};
+	//Order Headers
+	static String [] orderHeadres = {"Id","Order No.","Order date","Customer Name","Total Price","Total Qty"};
+	//Detail Headers
+	static String [] detailHeaders = {"Product Name","Price","Quantity","SubTotal",
+									  "Customer Name","Email","Phone"};
+	
+	public static ByteArrayInputStream detailToExcel(IdProductDto dtos) {
+		
+		try (
+			Workbook workbook = new XSSFWorkbook();
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			) {
+				
+				Sheet sheet = workbook.createSheet("Product");
+				
+				Row headerRow = sheet.createRow(0);
+				
+				for (int i = 0; i < detailHeaders.length; i++) {
+					Cell cell = headerRow.createCell(i);
+					cell.setCellValue(detailHeaders[i]);
+				}
+				
+				int rowIndex = 1;
+				
+				for (OrderItemDetail item : dtos.getItems()) {
+					Row row = sheet.createRow(rowIndex++);
+					
+					row.createCell(0).setCellValue(item.getProductName());
+					row.createCell(1).setCellValue(item.getPrice());
+					row.createCell(2).setCellValue(item.getQuantity());
+					row.createCell(3).setCellValue(item.getPrice()*item.getQuantity());
+					row.createCell(4).setCellValue(dtos.getCustomer().getFirstName() 
+							+ " " + dtos.getCustomer().getFirstName());
+					row.createCell(5).setCellValue(dtos.getCustomer().getEmail());
+					row.createCell(6).setCellValue(dtos.getCustomer().getPhone());
+				}
+				
+				workbook.write(out);
+				return new ByteArrayInputStream(out.toByteArray());
+				
+			
+		} catch (Exception e) {
+			throw new RuntimeException("Fail to import data into excel file" + e.getMessage());
+		}
+	}
+	
+	public static ByteArrayInputStream productToExcel(List<Product> products) {
+		
+		try (
+			Workbook workbook = new XSSFWorkbook();
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			) {
+			
+			Sheet sheet = workbook.createSheet("Product");
+			
+			Row headerRow = sheet.createRow(0);
+			
+			for (int i = 0; i < productHeaders.length; i++) {
+				Cell cell = headerRow.createCell(i);
+				cell.setCellValue(productHeaders[i]);
+			}
+			
+			int rowIndex = 1;
+			
+			for (Product pro : products) {
+				Row row = sheet.createRow(rowIndex++);
+				
+				row.createCell(0).setCellValue(pro.getId());
+				row.createCell(1).setCellValue(pro.getBrand());
+				row.createCell(2).setCellValue(pro.getName());
+				row.createCell(3).setCellValue(pro.getPrice());
+				row.createCell(4).setCellValue(pro.getQuantity());
+				row.createCell(5).setCellValue(pro.getCategory().getId());
+			}
+			
+			workbook.write(out);
+			return new ByteArrayInputStream(out.toByteArray());
+			
+		} catch (IOException e) {
+			throw new RuntimeException("Fail to import data into excel file" + e.getMessage());
+		}
+	}
+	
+	public static ByteArrayInputStream orderToExcel(List<OrderResponse> dtos) {
+		
+		try (
+			 Workbook book = new XSSFWorkbook();
+			 ByteArrayOutputStream out = new ByteArrayOutputStream()	
+				) {
+			
+			Sheet sheet = book.createSheet("orders");
+			
+			Row header = sheet.createRow(0);
+			
+			for (int i = 0; i < orderHeadres.length; i++) {
+				Cell cell = header.createCell(i);
+				cell.setCellValue(orderHeadres[i]);
+			}
+			
+			int rowIndex = 1;
+			
+			for (OrderResponse dto : dtos) {
+				
+				Row row = sheet.createRow(rowIndex++);
+				
+				row.createCell(0).setCellValue(dto.getId());
+				row.createCell(1).setCellValue(dto.getCode());
+				row.createCell(2).setCellValue(dto.getOrderDate());
+				row.createCell(3).setCellValue(dto.getName());
+				row.createCell(4).setCellValue(dto.getTotalPrice());
+				row.createCell(5).setCellValue(dto.getTotalQty());
+				
+			}
+			
+			book.write(out);
+			return new ByteArrayInputStream(out.toByteArray());
+			
+		} catch (Exception e) {
+			throw new RuntimeException("Fail to import data into excel file" + e.getMessage());
+		}
+	}
+	
+	
+//	PDF
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    public byte[] generatePdfFromDto(IdProductDto idProductDto) throws IOException, DocumentException {
+    	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        Document document = new Document();
+        PdfWriter.getInstance(document, outputStream);
+        document.open();
+
+        PdfPTable itemsTable = createItemsTable(idProductDto.getItems());
+        PdfPTable customerTable = createCustomerTable(idProductDto.getCustomer());
+        PdfPTable orderTable = createOrderTable(idProductDto.getOrder());
+
+        document.add(customerTable);
+        document.add(orderTable);
+        document.add(createSpacer());
+        document.add(itemsTable);
+
+        document.close();
+
+        return outputStream.toByteArray();
+    }
+
+    private PdfPTable createItemsTable(List<OrderItemDetail> items) {
+        PdfPTable table = new PdfPTable(5);
+        table.setWidthPercentage(100);
+        table.setSpacingBefore(10f);
+        table.setSpacingAfter(10f);
+
+        addTableHeader(table, "Product ID", "Item ID", "Product Name", "Price", "Quantity");
+
+        DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+        
+        for (OrderItemDetail item : items) {
+            table.addCell(String.valueOf(item.getProductId()));
+            table.addCell(String.valueOf(item.getItemId()));
+            table.addCell(item.getProductName());
+            table.addCell(decimalFormat.format(item.getPrice()));
+            table.addCell(String.valueOf(item.getQuantity()));
+        }
+
+        return table;
+    }
+
+    private PdfPTable createCustomerTable(Customer customer) {
+        PdfPTable table = new PdfPTable(2);
+        table.setWidthPercentage(100);
+        table.setSpacingBefore(10f);
+        table.setSpacingAfter(10f);
+
+        table.addCell(createCell("Customer ID:", Element.ALIGN_LEFT));
+        table.addCell(createCell(String.valueOf(customer.getId()), Element.ALIGN_RIGHT));
+        table.addCell(createCell("First Name:", Element.ALIGN_LEFT));
+        table.addCell(createCell(customer.getFirstName(), Element.ALIGN_RIGHT));
+        table.addCell(createCell("Last Name:", Element.ALIGN_LEFT));
+        table.addCell(createCell(customer.getLastName(), Element.ALIGN_RIGHT));
+        table.addCell(createCell("Phone:", Element.ALIGN_LEFT));
+        table.addCell(createCell(customer.getPhone(), Element.ALIGN_RIGHT));
+        table.addCell(createCell("Email:", Element.ALIGN_LEFT));
+        table.addCell(createCell(customer.getEmail(), Element.ALIGN_RIGHT));
+        table.addCell(createCell("Address:", Element.ALIGN_LEFT));
+        table.addCell(createCell(customer.getAddress(), Element.ALIGN_RIGHT));
+
+        return table;
+    }
+
+    private PdfPTable createOrderTable(Order order) {
+        PdfPTable table = new PdfPTable(2);
+        table.setWidthPercentage(100);
+        table.setSpacingBefore(10f);
+        table.setSpacingAfter(10f);
+
+        table.addCell(createCell("Order ID:", Element.ALIGN_LEFT));
+        table.addCell(createCell(String.valueOf(order.getId()), Element.ALIGN_RIGHT));
+        table.addCell(createCell("Code:", Element.ALIGN_LEFT));
+        table.addCell(createCell(order.getCode(), Element.ALIGN_RIGHT));
+        table.addCell(createCell("Order Date:", Element.ALIGN_LEFT));
+        table.addCell(createCell(order.getOrderDate().format(DATE_FORMATTER), Element.ALIGN_RIGHT));
+        table.addCell(createCell("Total Price:", Element.ALIGN_LEFT));
+        table.addCell(createCell(String.valueOf(order.getTotalPrice()), Element.ALIGN_RIGHT));
+        table.addCell(createCell("Total Quantity:", Element.ALIGN_LEFT));
+        table.addCell(createCell(String.valueOf(order.getTotalQty()), Element.ALIGN_RIGHT));
+        
+        return table;
+    }
+
+    private void addTableHeader(PdfPTable table, String... headers) {
+        Font font = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+        font.setColor(BaseColor.WHITE);
+
+        for (String header : headers) {
+            PdfPCell cell = new PdfPCell(new Phrase(header, font));
+            cell.setBackgroundColor(BaseColor.GRAY);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
+        }
+    }
+
+    private PdfPCell createCell(String text, int alignment) {
+        PdfPCell cell = new PdfPCell(new Phrase(text));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setHorizontalAlignment(alignment);
+        return cell;
+    }
+
+    private PdfPCell createSpacer() {
+        PdfPCell cell = new PdfPCell();
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setFixedHeight(10f);
+        return cell;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,222 @@
+package com.mit.first.payload;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.mit.first.ds.Product;
+
+public class FileHelper implements Excel {
+	
+	
+	
+	// To check if excel format
+	public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+		
+	//to check if excel-file
+	public static boolean hasExcelFormat(MultipartFile file) {
+			
+		if ( !TYPE.equals(file.getContentType())) {
+			return false;
+		}
+		return true;
+	}
+	
+	//For Product
+	static String [] productHeaders = {"Id","brand","name","price","quantity","category_id"};
+	static String productSheet = "Product";
+	//Order Headers
+	static String [] orderHeadres = {"Id","Order No.","Order date","Customer Name","Total Price","Total Qty"};
+	
+	//import-excel
+	public static ByteArrayInputStream productToExcel(List<Product> products) {
+		
+		try (
+			Workbook workbook = new XSSFWorkbook();
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			) {
+			
+			Sheet sheet = workbook.createSheet(productSheet);
+			
+			Row headerRow = sheet.createRow(0);
+			
+			for (int i = 0; i < productHeaders.length; i++) {
+				Cell cell = headerRow.createCell(i);
+				cell.setCellValue(productHeaders[i]);
+			}
+			
+			int rowIndex = 1;
+			
+			for (Product pro : products) {
+				Row row = sheet.createRow(rowIndex++);
+				
+				row.createCell(0).setCellValue(pro.getId());
+				row.createCell(1).setCellValue(pro.getBrand());
+				row.createCell(2).setCellValue(pro.getName());
+				row.createCell(3).setCellValue(pro.getPrice());
+				row.createCell(4).setCellValue(pro.getQuantity());
+				row.createCell(5).setCellValue(pro.getCategory().getId());
+			}
+			
+			workbook.write(out);
+			return new ByteArrayInputStream(out.toByteArray());
+			
+		} catch (IOException e) {
+			throw new RuntimeException("Fail to import data into excel file" + e.getMessage());
+		}
+	}
+	
+	
+	public static ByteArrayInputStream orderToExcel(List<OrderResponse> dtos) {
+		
+		try (
+			 Workbook book = new XSSFWorkbook();
+			 ByteArrayOutputStream out = new ByteArrayOutputStream()	
+				) {
+			
+			Sheet sheet = book.createSheet("orders");
+			
+			Row header = sheet.createRow(0);
+			
+			for (int i = 0; i < orderHeadres.length; i++) {
+				Cell cell = header.createCell(i);
+				cell.setCellValue(orderHeadres[i]);
+			}
+			
+			int rowIndex = 1;
+			
+			for (OrderResponse dto : dtos) {
+				
+				Row row = sheet.createRow(rowIndex++);
+				
+				row.createCell(0).setCellValue(dto.getId());
+				row.createCell(1).setCellValue(dto.getCode());
+				row.createCell(2).setCellValue(dto.getOrderDate());
+				row.createCell(3).setCellValue(dto.getName());
+				row.createCell(4).setCellValue(dto.getTotalPrice());
+				row.createCell(5).setCellValue(dto.getTotalQty());
+				
+			}
+			
+			book.write(out);
+			return new ByteArrayInputStream(out.toByteArray());
+			
+		} catch (Exception e) {
+			throw new RuntimeException("Fail to import data into excel file" + e.getMessage());
+		}
+	}
+	
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	
+	private static String formatFloat(float value) {
+        return String.format("%.2f", value);
+    }
+	
+	public static void generatePdf(IdProductDto detail , String outputFile) throws DocumentException ,IOException {
+		
+		Document document = new Document();
+		PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
+		document.open();
+		
+		//Customer data
+		PdfPTable customer = new PdfPTable(2);
+		customer.setWidthPercentage(50);
+		customer.setSpacingBefore(20);
+		customer.setSpacingAfter(20);
+		
+		//Add customer data
+		customer.addCell(createCell("Name:", Element.ALIGN_LEFT));
+		customer.addCell(createCell(detail.getCustomer().getFirstName(), Element.ALIGN_RIGHT));
+		
+		customer.addCell(createCell("Phone", Element.ALIGN_RIGHT));
+		customer.addCell(createCell(detail.getCustomer().getPhone(), Element.ALIGN_RIGHT));
+		
+		customer.addCell(createCell("Email", Element.ALIGN_RIGHT));
+		customer.addCell(createCell(detail.getCustomer().getEmail(), Element.ALIGN_RIGHT));
+		
+		customer.addCell(createCell("Address", Element.ALIGN_RIGHT));
+		customer.addCell(createCell(detail.getCustomer().getAddress(), Element.ALIGN_RIGHT));
+		
+		//Order detail
+		PdfPTable order = new PdfPTable(2);
+		order.setWidthPercentage(50);
+        order.setSpacingAfter(20);
+        
+        //Add order data
+        order.addCell(createCell("Order No.", Element.ALIGN_LEFT));
+        order.addCell(createCell(detail.getOrder().getCode(), Element.ALIGN_RIGHT));
+        
+        order.addCell(createCell("Order at:", Element.ALIGN_LEFT));
+        order.addCell(createCell(detail.getOrder().getOrderDate().format(DATE_FORMATTER), 
+        		Element.ALIGN_RIGHT));
+        
+        order.addCell(createCell("Total price", Element.ALIGN_LEFT));
+        order.addCell(createCell(formatFloat(detail.getOrder().getTotalPrice()), 
+        		Element.ALIGN_RIGHT));
+        
+        order.addCell(createCell("Total Qty", Element.ALIGN_LEFT));
+        order.addCell(createCell( formatFloat(detail.getOrder().getTotalQty()) ,
+        		Element.ALIGN_RIGHT));
+        
+        order.addCell(createCell("Last Update", Element.ALIGN_LEFT));
+        order.addCell(createCell(detail.getOrder().getLastDate().format(DATE_FORMATTER), 
+        		Element.ALIGN_RIGHT));
+        
+        document.add(customer);
+        document.add(order);
+        
+        document.close();
+        writer.close();
+        
+	}
+	
+	private static PdfPCell createCell(String content, int alignment) {
+        PdfPCell cell = new PdfPCell(new Phrase(content));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setHorizontalAlignment(alignment);
+        return cell;
+    }
+
+//    private PdfPCell createCell(String content, int alignment, boolean bold) {
+//        PdfPCell cell = createCell(content, alignment);
+//        if (bold) {
+//            Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
+//            cell.setPhrase(new Phrase(content, boldFont));
+//        }
+//        return cell;
+//    }
+
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

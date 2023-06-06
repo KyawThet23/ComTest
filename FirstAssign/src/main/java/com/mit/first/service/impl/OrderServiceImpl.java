@@ -13,10 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mit.first.ds.Customer;
 import com.mit.first.ds.Order;
 import com.mit.first.ds.OrderedItem;
-import com.mit.first.payload.CustomerDto;
 import com.mit.first.payload.IdProductDto;
 import com.mit.first.payload.NewOrderItem;
-import com.mit.first.payload.OrderDto;
+import com.mit.first.payload.OrderItemDetail;
 import com.mit.first.payload.OrderResponse;
 import com.mit.first.payload.PlaceOrder;
 import com.mit.first.repository.OrderRepo;
@@ -36,8 +35,6 @@ public class OrderServiceImpl implements OrderService{
 	private CutomerRepository customRepo;
 	@Autowired
 	private OrderItemRepository itemRepo;
-
-	
 	
 	private String generateOrderId(){
 		
@@ -50,9 +47,11 @@ public class OrderServiceImpl implements OrderService{
 	@Transactional
 	public void placeOrder(PlaceOrder request) {
 		
-		Order order = request.getOrder();
+		Order order = new Order();
 		order.setCode(generateOrderId());
 		order.setOrderDate(LocalDate.now());
+		order.setTotalPrice(request.getTotalPrice());
+		order.setTotalQty(request.getTotalQty());
 		
 		List<OrderedItem> items = request.getOrderItems();
 		items.forEach(item -> order.addOrderItem(item));
@@ -155,9 +154,30 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
-	public List<IdProductDto> getAllProductsById(int id) {
-		// TODO Auto-generated method stub
-		return null;
+	public IdProductDto getAllProductsById(int id) {
+		
+		 List<Object[]> detail = repo.getAllProductsByOrderId(id);
+		 IdProductDto dto = new IdProductDto();
+		 
+		 List<OrderItemDetail> details = new ArrayList<>();
+		 
+		 for (Object[] row : detail) {
+			 
+			 OrderItemDetail item = new OrderItemDetail();
+			 item.setProductId((int) row[0]);
+			 item.setItemId((int) row[1]);
+			 item.setProductName((String) row[2]);
+			 item.setPrice((float) row[3]);
+			 item.setQuantity((int) row[4]);
+			 details.add(item);
+			
+			 dto.setCustomer((Customer) row[5]);
+			 dto.setOrder((Order) row[6]);
+		 }
+		 
+		 dto.setItems(details);
+		 
+		 return dto;
 	}
 }
 

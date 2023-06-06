@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mit.first.payload.FileHelper;
 
 @SpringBootApplication
 public class FirstAssignApplication {
@@ -22,6 +23,9 @@ public class FirstAssignApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(FirstAssignApplication.class, args);
+		
+//		FileHelper pdfGenerator = new FileHelper();
+//        pdfGenerator.generatePdf();
 	}
 
 }

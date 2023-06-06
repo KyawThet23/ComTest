@@ -19,5 +19,5 @@ public interface OrderService {
 
 	List<OrderResponse> getAll();
 
-	List<IdProductDto> getAllProductsById(int id);
+	IdProductDto getAllProductsById(int id);
 }
